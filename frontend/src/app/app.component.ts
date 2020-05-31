@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
+    title = 'frontend';
+    mapCenter = [ 23.4550, 90.2320 ]
 }
