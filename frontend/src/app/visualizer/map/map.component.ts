@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MapService } from '../map.service'
 import * as L from 'leaflet';
 
 @Component({
@@ -7,15 +8,23 @@ import * as L from 'leaflet';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-    @Input('mapId') mapId:string;
-    @Input('centerPoint') centerPoint:any;
-    @Input('initialZoom') initialZoom:number;
+    @Input('mapId') mapId: string;
+    @Input('centerPoint') centerPoint: any;
+    @Input('initialZoom') initialZoom: number;
 
-    theMap:any;
+    @Output() initializeEvent: EventEmitter<any> = new EventEmitter();
 
-    constructor() { }
+    theMap: any;
+    initialized: boolean = false;
+
+    constructor(private mapService: MapService) { }
 
     ngOnInit() {
+        this.mapService.addMap(this.mapId, this)
+    }
+
+    ngOnDestroy() {
+        this.mapService.removeMap(this.mapId)
     }
 
     ngAfterViewInit() {
@@ -34,6 +43,9 @@ export class MapComponent implements OnInit {
         });
 
         tiles.addTo(this.theMap);
+
+        this.initialized = true;
+        this.initializeEvent.emit()
     }
 
 }

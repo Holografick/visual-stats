@@ -3,5 +3,7 @@
         [mapId]="'bd-districts'"
         [centerPoint]="mapCenter"
         [initialZoom]="7"
+        
+        (initializeEvent)="getAndDraw()"
     ></app-map>
 </div>

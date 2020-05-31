@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapComponent } from './map/map.component';
+import { MapService } from './map.service';
 
 
 
@@ -11,6 +12,9 @@ import { MapComponent } from './map/map.component';
   ],
   exports: [
     MapComponent
+  ],
+  providers: [
+    MapService
   ]
 })
 export class VisualizerModule { }
