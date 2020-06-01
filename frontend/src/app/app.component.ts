@@ -10,7 +10,7 @@ import { MapService } from './visualizer/map.service';
 export class AppComponent {
     title = 'frontend';
     mapCenter = [ 23.4550, 90.2320 ]
-    data;
+    data: any = {};
 
     constructor(
         private mapService: MapService,
@@ -20,12 +20,24 @@ export class AppComponent {
     // Just for demo now
     // TODO: get data for each district and draw on map
     getAndDraw(){
-            this.http.get(
-                'https://nominatim.openstreetmap.org/search?country=bangladesh&state=dhaka&county=dhaka&polygon_geojson=1&format=json'
-            ).subscribe( (data) => {
-                this.data = data[0].geojson.coordinates[0];
-                let border = this.data.map( item => [item[1], item[0]])
-                this.mapService.addPolygon('bd-districts', 'dhaka', border)
+        this.http.get('/assets/district_names.json')
+            .subscribe( (districts: any) => {
+                districts.forEach( (districtName: any) => {
+                    this.http.get(`/assets/districts/${districtName}.json`)
+                        .subscribe( (district: any) => {
+                            let border = district.border.map( item => [item[1], item[0]])
+                            this.mapService.addPolygon('bd-districts', district.name, border)
+
+                            let density = district.stats.population/district.stats.area;
+                            let markup = `
+                                <h2 style="margin: 0">${district.name}</h2><br>
+                                <b>Population: </b>${district.stats.population.toFixed(2).toLocaleString()}<br>
+                                <b>Area: </b>${district.stats.area.toFixed(2).toLocaleString()} km<sup>2</sup><br>
+                                <b>Density: </b>${density.toFixed(2).toLocaleString()}/km<sup>2</sup><br>
+                            `
+                            this.mapService.attachPopup('bd-districts', district.name, markup)
+                        })
+                })
             })
     }
 }
