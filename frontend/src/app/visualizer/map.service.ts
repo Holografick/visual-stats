@@ -23,11 +23,12 @@ export class MapService {
         this.mapRegister[mapId].elements[itemId] = item;
     }
 
-    addPolygon(mapId, polygonId, border){
+    addPolygon(mapId, polygonId, border, options=null){
         const theMap = this.mapRegister[mapId].component.theMap;
-        const polygon = L.polygon(border).addTo(theMap);
+        const polygon = L.polygon(border, options).addTo(theMap);
         
         this.setMapItem(mapId, polygonId, polygon);
+        return polygon;
     }
 
     attachPopup(mapId, itemId, markup){
